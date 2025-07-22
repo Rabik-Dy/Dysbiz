@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="model_pos_kitchen_screen" model="ir.model">
+        <field name="name">POS Kitchen Screen</field>
+        <field name="model">pos.kitchen.screen</field>
+        <field name="state">manual</field>
+    </record>
+</odoo>
