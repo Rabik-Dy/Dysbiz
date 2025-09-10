@@ -32,46 +32,44 @@ RUN apt-get update && apt-get install -y \
 # Create odoo user
 RUN useradd -m -d $ODOO_HOME -U -r -s /bin/bash $ODOO_USER
 
-# Create directories with proper permissions
+# Create directories
 RUN mkdir -p /etc/odoo \
- && mkdir -p /var/lib/odoo \
- && mkdir -p /var/log/odoo \
- && mkdir -p $ODOO_HOME/addons \
- && mkdir -p $ODOO_HOME/custom-addons \
+    /var/lib/odoo \
+    /var/log/odoo \
+    $ODOO_HOME/addons \
+    $ODOO_HOME/custom-addons \
  && chmod 755 /etc/odoo
 
-# Download and install Odoo
+# Download Odoo source
 RUN git clone --depth 1 --branch $ODOO_VERSION https://github.com/odoo/odoo.git $ODOO_HOME/odoo
 
 # Install Python dependencies
-RUN pip3 install --no-cache-dir -r $ODOO_HOME/odoo/requirements.txt
+RUN pip3 install --no-cache-dir -r $ODOO_HOME/odoo/requirements.txt \
+ && pip3 install --no-cache-dir num2words phonenumbers xlwt xlrd
 
-# Install additional Python packages
-RUN pip3 install --no-cache-dir \
-    num2words \
-    phonenumbers \
-    xlwt \
-    xlrd
+# Set ownership
+RUN chown -R $ODOO_USER:$ODOO_USER $ODOO_HOME /var/lib/odoo /var/log/odoo
 
-# Set ownership for data directories
-RUN chown -R $ODOO_USER:$ODOO_USER $ODOO_HOME \
- && chown -R $ODOO_USER:$ODOO_USER /var/lib/odoo \
- && chown -R $ODOO_USER:$ODOO_USER /var/log/odoo
-
-# Create default configuration file (use env vars for Railway)
-RUN mkdir -p /etc/odoo && \
-    cat > /etc/odoo/odoo.conf <<EOF
+# Create Odoo config file with Railway Postgres details
+RUN cat > /etc/odoo/odoo.conf << 'EOF'
 [options]
-admin_passwd = \${ODOO_ADMIN_PASSWD}
-db_host = \${ODOO_DB_HOST}
-db_port = \${ODOO_DB_PORT}
-db_user = \${ODOO_DB_USER}
-db_password = \${ODOO_DB_PASSWORD}
-db_name = False
+; Admin password
+admin_passwd = admin_password_change_me
+
+; Database connection (from your Railway Postgres URL)
+db_host = postgres.railway.internal
+db_port = 5432
+db_user = postgres
+db_password = XOXOhOHhCwoOTISJopYYasNbTLOpWCbE
+db_name = railway
+
+; Odoo paths
 addons_path = /opt/odoo/odoo/addons,/opt/odoo/custom-addons
 data_dir = /var/lib/odoo
 logfile = /var/log/odoo/odoo.log
 log_level = info
+
+; Network
 http_interface = 0.0.0.0
 http_port = 8069
 longpolling_port = 8072
@@ -81,16 +79,16 @@ list_db = True
 proxy_mode = False
 EOF
 
-# Set proper permissions for config file
+# Set config permissions
 RUN chmod 644 /etc/odoo/odoo.conf && chown root:root /etc/odoo/odoo.conf
 
-# Expose Odoo ports
-EXPOSE 8069 8071 8072
+# Expose ports
+EXPOSE 8069 8072
 
-# Switch user
+# Switch to Odoo user
 USER $ODOO_USER
 
-# Set working directory
+# Working directory
 WORKDIR $ODOO_HOME
 
 # Run Odoo
