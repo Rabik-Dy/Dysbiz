@@ -51,33 +51,26 @@ RUN pip3 install --no-cache-dir -r $ODOO_HOME/odoo/requirements.txt \
 RUN chown -R $ODOO_USER:$ODOO_USER $ODOO_HOME /var/lib/odoo /var/log/odoo
 
 # Create Odoo config file with Railway Postgres details
-RUN cat > /etc/odoo/odoo.conf << 'EOF'
-[options]
-; Admin password
-admin_passwd = admin_password_change_me
-
-; Database connection (from your Railway Postgres URL)
-db_host = postgres.railway.internal
-db_port = 5432
-db_user = postgres
-db_password = XOXOhOHhCwoOTISJopYYasNbTLOpWCbE
-db_name = railway
-
-; Odoo paths
-addons_path = /opt/odoo/odoo/addons,/opt/odoo/custom-addons
-data_dir = /var/lib/odoo
-logfile = /var/log/odoo/odoo.log
-log_level = info
-
-; Network
-http_interface = 0.0.0.0
-http_port = 8069
-longpolling_port = 8072
-db_maxconn = 64
-db_template = template0
-list_db = True
-proxy_mode = False
-EOF
+RUN printf '%s\n' \
+"[options]" \
+"admin_passwd = admin" \
+"db_host = postgres.railway.internal" \
+"db_port = 5432" \
+"db_user = postgres" \
+"db_password = XOXOhOHhCwoOTISJopYYasNbTLOpWCbE" \
+"db_name = railway" \
+"addons_path = /opt/odoo/odoo/addons,/opt/odoo/custom-addons" \
+"data_dir = /var/lib/odoo" \
+"logfile = /var/log/odoo/odoo.log" \
+"log_level = info" \
+"http_interface = 0.0.0.0" \
+"http_port = 8069" \
+"longpolling_port = 8072" \
+"db_maxconn = 64" \
+"db_template = template0" \
+"list_db = True" \
+"proxy_mode = False" \
+> /etc/odoo/odoo.conf
 
 # Set config permissions
 RUN chmod 644 /etc/odoo/odoo.conf && chown root:root /etc/odoo/odoo.conf
