@@ -40,4 +40,7 @@ USER $ODOO_USER
 WORKDIR $ODOO_HOME
 
 # Run Odoo on Railway PORT
-CMD ["python3", "/opt/odoo/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "--http-port", "${PORT}"]
+#CMD ["python3", "/opt/odoo/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "--http-port", "${PORT}"]
+
+# Run Odoo on Railway PORT
+CMD sh -c "python3 /opt/odoo/odoo/odoo-bin -c /etc/odoo/odoo.conf --http-port \$PORT"
