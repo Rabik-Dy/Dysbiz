@@ -108,4 +108,5 @@ WORKDIR $ODOO_HOME
 #CMD ["python3", "/opt/odoo/odoo/odoo-bin",
 #     "-c", "/etc/odoo/odoo.conf",
 #    "--no-database-checks"]
-CMD ["python3", "/opt/odoo/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "--no-database-checks"]
+# CMD ["python3", "/opt/odoo/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "--no-database-checks"]
+CMD ["python3", "/opt/odoo/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "--http-port", "${PORT}"]
