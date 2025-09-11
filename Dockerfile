@@ -105,6 +105,7 @@ WORKDIR $ODOO_HOME
 # -------------------------
 # Run Odoo
 # -------------------------
-CMD ["python3", "/opt/odoo/odoo/odoo-bin",
+#CMD ["python3", "/opt/odoo/odoo/odoo-bin",
      "-c", "/etc/odoo/odoo.conf",
      "--no-database-checks"]
+CMD ["python3", "/opt/odoo/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "--no-database-checks"]
